@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+- '10'
+branches:
+  only:
+  - master
+before_install:
+- npm install -g npm@^6.13.0
+script:
+- npm run build
+deploy:
+  provider: npm
+  email: brettswift@gmail.com
+  api_key:
+    secure: idLWaFKvUzXdFuxEe0nAQ4um239stlh67pizubMuksQXnT4fp85feAu2Pih0XcKXLQhxVdCRhtmXoqwWHH2GbwJ7KSQcrgiVg9r3SsT2n3RCEHWpK48Eg0j5WV5h4y1kQa+RRPWLPzdqNQ5gNtWSZ3Eo/HxlIorhacZd62PHsjsiuJBkqnmSESs3wbXMa1hGSASyDlxwmbxqHri5XcOoz0R/pHatm+eRwjevfTAXfI9BcKHGqyixsIv13VaDBNEitN5SNBSwXHklSYfwE3RKFyi0SjbS8cp8iVKhKCUCa7UKpQmybR5L3QJE304Io3E+cUG4xKW+weMAbyD2DLTY8IzyGv7djMrqKwlDEFFHoPEvRtkPhSmAkIPpIz9t0BjyXTAe944XYV5oIR4EQ48jUApGOGy0nQo/lJ8E8/uhOeuO4eq4fGsBNaE8yhS7XBby1k7lCTEhdmi9vkhc5CvTQVqgiJFzkT1GoAG42fF0CDYsv1HxTuemR3v78MFPFpiidlE/JwPylZYFZjICdPVx2NMlKb6tJhHIZvSaFkzkAN5qgpThCgPYvXsH/NiiwGeFnuVezxn4BnogQNo7YdMtIEN3mRtTtDDj7GBrAscNPYEfomXyQEn/DwgYsOLPlO0tC3VbS1vUz8AznhrY4Z3RFAyb0gOQJ+mW6fTrk+IqE8c=
+  on:
+    tags: true
+    repo: brettswift/cdk-git-config
+    branch: master

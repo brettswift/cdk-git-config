@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import cdk = require('@aws-cdk/core');
-import { SsmConfigStoreStack } from '../lib/ssm-config-store-stack';
+import { ConfigExampleStack } from '../lib/config-example-stack';
 
 const app = new cdk.App();
-new SsmConfigStoreStack(app, 'SsmConfigStoreStack');
+new ConfigExampleStack(app, 'ConfigExampleStack');
