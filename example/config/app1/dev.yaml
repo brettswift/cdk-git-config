@@ -1,0 +1,6 @@
+MonkeyProvider:
+  url: http://dev.monkey.com
+Logging:
+  LogLevel:
+    Default: Information
+  

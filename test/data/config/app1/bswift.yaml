@@ -1,0 +1,6 @@
+MonkeyProvider:
+  url: http://feature1.monkey.com
+Logging:
+  LogLevel:
+    Default: Debug 
+  

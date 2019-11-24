@@ -1,0 +1,3 @@
+{
+  "app": "npx ts-node bin/ssm-config-store.ts"
+}

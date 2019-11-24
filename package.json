@@ -1,0 +1,51 @@
+{
+  "name": "cdk-git-config",
+  "version": "0.1.1",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "author": "brettswift@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brettswift/cdk-git-config.git"
+  },
+  "scripts": {
+    "preversion": "npm test",
+    "postversion": "npm publish",
+    "release": "standard-version",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
+  },
+  "keywords": [
+    "aws",
+    "cdk",
+    "ssm",
+    "git"
+  ],
+  "peerDependencies": {
+    "@aws-cdk/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.17.5",
+    "aws-cdk": "^1.16.2",
+    "standard-version": "^7.0.1",
+    "ts-jest": "^24.1.0",
+    "ts-node": "^8.1.0",
+    "typescript": "~3.7.2"
+  },
+  "dependencies": {
+    "@types/flat": "0.0.28",
+    "@types/glob": "^7.1.1",
+    "@types/jest": "^24.0.22",
+    "@types/js-yaml": "^3.12.1",
+    "flat": "^5.0.0",
+    "glob": "^7.1.6",
+    "jest": "^24.9.0",
+    "js-yaml": "^3.13.1",
+    "@aws-cdk/assert": "^1.16.3",
+    "@aws-cdk/aws-ssm": "^1.16.3",
+    "@aws-cdk/core": "^1.16.2",
+    "source-map-support": "^0.5.16"
+  }
+}
