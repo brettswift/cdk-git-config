@@ -2,6 +2,7 @@ import cdk = require('@aws-cdk/core');
 import ssm = require('@aws-cdk/aws-ssm')
 
 import configParser = require('../../lib/config/configuration')
+import gitToSsm = require('../../lib/gitToSsm')
 import path = require('path')
 
 export class ConfigExampleStack extends cdk.Stack {
@@ -17,21 +18,12 @@ export class ConfigExampleStack extends cdk.Stack {
       ssmRootPath: '/gitconfigstore/root'
     })
 
-    const allConfigs = configLoader.load()
+    // TODO: cleanup this implementation
+    configLoader.load()
     configLoader.printConfiguration()
 
-    allConfigs.forEach(configGroup => {
-      
-      Object.keys(configGroup.configSets).forEach((key)=> {
-
-        const value = configGroup.configSets[key]
-        new ssm.StringParameter(this, `Invoice-${configGroup.configGroupName}-${key}`, {
-          description: `from file: ${configGroup.relativePath}`,
-          parameterName: key,
-          type: ssm.ParameterType.STRING,
-          stringValue: `${value}`,
-        })
-      });
+    new gitToSsm.GitToSsm(this, 'SampleConfig', {
+      configuration: configLoader
     })
   }
 }

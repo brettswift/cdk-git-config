@@ -20,7 +20,7 @@ export class GitToSsm extends cdk.Construct {
 
         const value = configGroup.configSets[key]
 
-        new ssm.StringParameter(this, `Invoice-${configGroup.configGroupName}-${key}`, {
+        new ssm.StringParameter(this, `${props.configuration.ssmRootPath}-${configGroup.configGroupName}-${key}`, {
           description: `from file: ${configGroup.relativePath}`,
           parameterName: key,
           type: ssm.ParameterType.STRING,

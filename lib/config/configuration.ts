@@ -34,8 +34,9 @@ export interface ConfigGroup {
 // TODO: accept a parameter 'templateBreakoutDepth' that will split out templates into folders by depth. 
 //       as is would represent a value of 0 in that param
 export class ConfigLoader {
+
     private rootDir: string
-    private ssmRootPath: string;
+    public ssmRootPath: string;
     private _configuration: ConfigGroup[]
 
     constructor(props: ConfigurationProps) {
