@@ -114,14 +114,15 @@ export class ConfigLoader {
         let group: ConfigGroup
 
         files.forEach(filePath => {
-            const fileName = path.basename(filePath)
-            const filePathPart = fileName.substring(0, fileName.indexOf('.'))
+            const fullFilePathPart = filePath.replace(`${rootDir}/`,'')
+            const parentFolderRelativeToRoot = fullFilePathPart.substring(0, fullFilePathPart.indexOf('.'))
+            const configRoot = `${this.ssmRootPath}/${parentFolderRelativeToRoot}`
+            const relativeFilePath = `.${filePath.substring(rootDir.length)}`;
             const fileContents = this.loadYamlFile(filePath)
-            const configRoot = `${this.ssmRootPath}/${filePathPart}`
             group = {
-                relativePath: `.${filePath.substring(rootDir.length)}`,
+                relativePath: relativeFilePath,
                 fullPath: filePath,
-                configGroupName: filePathPart,
+                configGroupName: parentFolderRelativeToRoot,
                 configSets: this.getValuesFromFileObject(fileContents, configRoot)
             } as ConfigGroup
 
