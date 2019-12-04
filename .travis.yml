@@ -16,4 +16,3 @@ deploy:
   on:
     tags: true
     repo: brettswift/cdk-git-config
-    branch: master
