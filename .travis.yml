@@ -9,8 +9,6 @@ deploy:
   provider: npm
   edge: true
   email: brettswift@gmail.com
-  api_key:
-    secure: Lw/L0vxXbCLBOA1SHmfi4MA8Gsl32KW5bgVYywy6Is/qNP5SciVhugP+58lXQtGjK2MoDA3V6XPvijm1HCVCPX3Gru4E6dO5ej6mo6DZoaR+FSZ0VywnaF0AYENOqfezmM+Q/oOI71WWPLx5yUeAj06dTXghcSMsnTM7JVcaUQNIMF5AKwy07/3+KljEMifd3psAO1ibAVCMcffseuarJPLoIBkpOwR9WsHeN4KI5Qj7zx2SdUo2tVGKFV5tMZ8YapX40XqeuNEc1iP9FW5UZ5ijWeSQ1JRp7wEUN6uNrxzh9HH/HQO5yAZoAcCSSPMgNIVrMYPHflMrIQIk8ZKBxuJ63mOSQWWOKqinRd8BOQe2G/pgN1MZdATlS9LeRIUC4TKvPK1m4OEEhZiAuougC7WEV3EzrAeYLyXzbD2WuOS4mXCF9Z9k9cPzOfgBBi/SnNdXF5/ghdTv2/ssm8XVKodM3SI81kzyRyrhoQMlKTLb61eZEKoUeI3CIKmRMhFcCwsn3ZW4kx0ncmfUfLqpQdcjf4E2RBgOLpWx7MnO1iu4cMN62hXR5mEbz997/LhRukvAMJuI8v0hBZlu5aaC4rxHfCik9cpP4+Wq+PWSgi6YL/JFGedpgxIkW1+cynAcZh16AT4JkmxlJhtfXCenn5SvZfFCFNvJF0BD8OhpCOc=
+  api_key: "$NPM_TOKEN"
   on:
     tags: true
-    repo: brettswift/cdk-git-config
