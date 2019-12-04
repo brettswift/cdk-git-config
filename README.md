@@ -6,7 +6,7 @@ An AWS CDK construct that will replicate a directory structure of yaml files int
 
 In Continuous Delivery, you need to tweak configuration in production at runtime, quickly, without flowing through your entire dev --> staging --> prod pipeline.  This can be called "out of band" configuration.  Alternative to "in-band" configuration which is committed to your software git repo, and updates when the software is deployed.
 
-One popular way of storing out of band configuration is SSM.  However this can get out of hand quickly.  
+One popular way of storing out of band configuration is SSM.  However this can get out of hand quickly.
 
 Having configuration stored in git, with a simple interface (yaml) is nice.  So lets do that, and replicate the directory via CDK / Cloudformation into AWS SSM!
 
@@ -25,6 +25,18 @@ See the examples folder for a deployable stack you can use to evaluate.
 
 * Secure parameters - currently not supported
 * Include a CodePipeline construct, as automating this is critical.
+
+## Releasing
+
+1. Merge PR to master
+2. Run the release script according to what type of release this should be
+    * `npm run release-[major|minor|patch]`
+    * This will:
+        * create the appropriate release number in package.json
+        * create the tag, and commit
+        * Finally push the tag and commit up
+        * Travis will run the build and release to NPM.
+
 
 ## Contributing
 

@@ -1,6 +1,6 @@
 {
   "name": "cdk-git-config",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "author": "brettswift@gmail.com",
@@ -10,8 +10,10 @@
   },
   "scripts": {
     "preversion": "npm test",
-    "postversion": "npm publish",
-    "release": "standard-version",
+    "pushRelease": "git push --follow-tags origin master",
+    "release-patch": "standard-version -r patch && npm run pushRelease",
+    "release-minor": "standard-version -r minor && npm run pushRelease",
+    "release-major": "standard-version -r major && npm run pushRelease",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
