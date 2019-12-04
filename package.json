@@ -11,9 +11,9 @@
   "scripts": {
     "preversion": "npm test",
     "postversion": "git push --follow-tags origin master",
-    "release-patch": "standard-version -r patch",
-    "release-minor": "standard-version -r minor",
-    "release-major": "standard-version -r major",
+    "release-patch": "standard-version -r patch && npm run postversion",
+    "release-minor": "standard-version -r minor && npm run postversion",
+    "release-major": "standard-version -r major && npm run postversion",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
