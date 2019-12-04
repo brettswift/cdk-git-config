@@ -4,6 +4,7 @@ node_js:
 branches:
   only:
   - master
+  - /v\d+\.\d+[a-z]/
 before_install:
 - npm install -g npm@^6.13.0
 script:
