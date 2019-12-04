@@ -1,5 +1,4 @@
 import cdk = require('@aws-cdk/core');
-import ssm = require('@aws-cdk/aws-ssm')
 
 import configParser = require('../../lib/config/configuration')
 import gitToSsm = require('../../lib/gitToSsm')

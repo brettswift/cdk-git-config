@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "build",
+    "outDir": "dist",
     "target":"ES2018",
     "module": "commonjs",
     "lib": ["es2018"],
@@ -22,6 +22,6 @@
   },
   "exclude": [
       "cdk.out",
-      "build"
+      "dist"
   ]
 }
