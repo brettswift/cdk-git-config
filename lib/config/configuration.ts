@@ -4,6 +4,7 @@ import flat = require('flat')
 import fs = require('fs');
 import path = require('path');
 import assert = require('assert')
+import cdk = require('@aws-cdk/core')
 
 /**
  * Configuration describing how to load and parse the config files
@@ -13,6 +14,15 @@ export interface ConfigurationProps {
     rootDir: string
     // A path in SSM that will prefix all paths that come out of the config files.
     ssmRootPath: string
+    /**
+     * In the case when this config is deployed to multiple accounts, 
+     * and the account configuration is in a file <account_number>.yaml
+     * or a folder <account_number>/config.yaml
+     * this flag will ignore configurations that do not match the account we are 
+     * currently deploying into.
+     * @default: true
+     */
+    filterByCurrentAccount?: boolean 
 }
 
 /**
@@ -38,11 +48,12 @@ export class ConfigLoader {
     private rootDir: string
     public ssmRootPath: string;
     private _configuration: ConfigGroup[]
+    private filterByCurrentAccount: boolean;
 
     constructor(props: ConfigurationProps) {
         this.rootDir = props.rootDir
         this.ssmRootPath = props.ssmRootPath
-
+        this.filterByCurrentAccount = (props.filterByCurrentAccount === undefined) ? true : props.filterByCurrentAccount;
         this.validateProps(props)
     }
 
@@ -98,6 +109,20 @@ export class ConfigLoader {
         const contents = yaml.safeLoad(fs.readFileSync(file, 'utf8'));
         return contents
     }
+    
+    /**
+     * If the word account is in the path, and the 
+     * @param path The path of the configuration file in question.
+     */
+    private shouldRenderPath(path: string){
+
+        if(!this.filterByCurrentAccount) return true
+        if(!path.includes('account')) return true
+
+        const currAccount = process.env.CDK_DEFAULT_ACCOUNT
+        if(!currAccount) throw new Error("Expected to find CDK account from environment variable process.env.CDK_DEFAULT_ACCOUNT but did not.")
+        return path.includes(currAccount)
+    }
 
     /**
      * Globs all yaml files in the given rootDir returning an array of ConfigGroups. 
@@ -114,11 +139,19 @@ export class ConfigLoader {
         let group: ConfigGroup
 
         files.forEach(filePath => {
+            // examples are from the example/config project.
+            //fullFilePathPart: app1/bswift.yaml
             const fullFilePathPart = filePath.replace(`${rootDir}/`,'')
+            //parentFolderRelativeToRoot: app1/bswift
             const parentFolderRelativeToRoot = fullFilePathPart.substring(0, fullFilePathPart.indexOf('.'))
+            //configRoot: /gitconfigstore/root/app1/bswift
             const configRoot = `${this.ssmRootPath}/${parentFolderRelativeToRoot}`
+            //relativeFilePath: ./app1/bswift.yaml
             const relativeFilePath = `.${filePath.substring(rootDir.length)}`;
             const fileContents = this.loadYamlFile(filePath)
+
+            if(! this.shouldRenderPath(fullFilePathPart)) return;
+            
             group = {
                 relativePath: relativeFilePath,
                 fullPath: filePath,
@@ -129,6 +162,21 @@ export class ConfigLoader {
             configGroups.push(group);
         });
         return configGroups
+    }
+
+    /**
+     * Returns an SSM Key path omitting the account number.
+     * @param rawKey the SSM key which may contain an account number in it.
+     */
+    private filterAccountFromSsmKey(rawKey: string): string {
+        if(!this.filterByCurrentAccount) return rawKey;
+
+        const currAccount = process.env.CDK_DEFAULT_ACCOUNT
+        if(!currAccount) throw new Error("Expected to find CDK account from environment variable process.env.CDK_DEFAULT_ACCOUNT but did not.");
+
+        let filteredKey = rawKey.replace(currAccount,'');
+        filteredKey = filteredKey.replace('//','/');
+        return filteredKey;
     }
 
     /**
@@ -146,7 +194,7 @@ export class ConfigLoader {
 
         Object.keys(flattened).forEach((key) => {
             const value = flattened[key]
-            const theKey = `${ssmRootPath}/${key}`
+            const theKey = this.filterAccountFromSsmKey(`${ssmRootPath}/${key}`)
             result[theKey] = value
         })
         return result;
