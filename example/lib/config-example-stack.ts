@@ -14,11 +14,12 @@ export class ConfigExampleStack extends cdk.Stack {
 
     const configLoader = new configParser.ConfigLoader({
       rootDir: configRoot,
-      ssmRootPath: '/gitconfigstore/root'
+      ssmRootPath: '/gitconfigstore/root',
+      // filterByCurrentAccount: false, //uncomment to see behavioural differences
     })
 
     // TODO: cleanup this implementation
-    configLoader.load()
+    const configs = configLoader.load()
     configLoader.printConfiguration()
 
     new gitToSsm.GitToSsm(this, 'SampleConfig', {
