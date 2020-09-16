@@ -118,7 +118,7 @@ describe('environmental variables', () => {
     const conf = new config.ConfigLoader({ ssmRootPath: '/junk', rootDir: 'junk' })
     const fileContents = {
       PitneyBowes:
-        { vaulthost: 'playpen-billing-renderer.playpen.dsl.aws.shaw.ca' },
+        { vaulthost: 'playpen-billing-renderer' },
       Logging: {
         LogLevel: { Default: 'Information' }
       }
