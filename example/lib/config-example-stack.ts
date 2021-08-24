@@ -19,7 +19,7 @@ export class ConfigExampleStack extends cdk.Stack {
     })
 
     // TODO: cleanup this implementation
-    const configs = configLoader.load()
+    configLoader.load()
     configLoader.printConfiguration()
 
     new gitToSsm.GitToSsm(this, 'SampleConfig', {

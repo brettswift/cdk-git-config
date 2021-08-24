@@ -2,9 +2,7 @@ import yaml = require('js-yaml')
 import glob = require('glob')
 import flat = require('flat')
 import fs = require('fs');
-import path = require('path');
 import assert = require('assert')
-import cdk = require('@aws-cdk/core')
 
 /**
  * Configuration describing how to load and parse the config files
@@ -105,8 +103,8 @@ export class ConfigLoader {
         }
     }
 
-    private loadYamlFile(file: string) {
-        const contents = yaml.safeLoad(fs.readFileSync(file, 'utf8'));
+    private loadYamlFile(file: string): any {
+        const contents = yaml.load(fs.readFileSync(file, 'utf8'));
         return contents
     }
     
@@ -148,10 +146,11 @@ export class ConfigLoader {
             const configRoot = `${this.ssmRootPath}/${parentFolderRelativeToRoot}`
             //relativeFilePath: ./app1/bswift.yaml
             const relativeFilePath = `.${filePath.substring(rootDir.length)}`;
-            const fileContents = this.loadYamlFile(filePath)
+            const fileContents: object = this.loadYamlFile(filePath)
 
             if(! this.shouldRenderPath(fullFilePathPart)) return;
-            
+           
+            if(!fileContents) throw new Error("Expected file Contents to not be null")
             group = {
                 relativePath: relativeFilePath,
                 fullPath: filePath,

@@ -26,28 +26,28 @@
     "git"
   ],
   "peerDependencies": {
-    "@aws-cdk/core": "^1.0.0"
+    "@aws-cdk/core": "^1.119.0"
   },
   "devDependencies": {
-    "@types/node": "^10.17.5",
-    "aws-cdk": "^1.16.2",
-    "standard-version": "^8.0.1",
-    "ts-jest": "^24.1.0",
-    "ts-node": "^8.1.0",
-    "typescript": "~3.7.2"
+    "@types/node": "^16.7.1",
+    "aws-cdk": "^1.119.0",
+    "standard-version": "^9.3.1",
+    "ts-jest": "^27.0.5",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.3.5"
   },
   "dependencies": {
-    "@types/flat": "0.0.28",
-    "@types/glob": "^7.1.1",
-    "@types/jest": "^24.0.22",
-    "@types/js-yaml": "^3.12.1",
-    "flat": "^5.0.0",
-    "glob": "^7.1.6",
-    "jest": "^24.9.0",
-    "js-yaml": "^3.13.1",
-    "@aws-cdk/assert": "^1.16.3",
-    "@aws-cdk/aws-ssm": "^1.16.3",
-    "@aws-cdk/core": "^1.16.2",
-    "source-map-support": "^0.5.16"
+    "@aws-cdk/assert": "^1.119.0",
+    "@aws-cdk/aws-ssm": "^1.119.0",
+    "@aws-cdk/core": "^1.119.0",
+    "@types/flat": "5.0.2",
+    "@types/glob": "^7.1.4",
+    "@types/jest": "^27.0.1",
+    "@types/js-yaml": "^4.0.3",
+    "flat": "^5.0.2",
+    "glob": "^7.1.7",
+    "jest": "^27.0.6",
+    "js-yaml": "^4.1.0",
+    "source-map-support": "^0.5.19"
   }
 }
