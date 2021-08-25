@@ -3,6 +3,7 @@ import glob = require('glob')
 import flat = require('flat')
 import fs = require('fs');
 import assert = require('assert')
+import { ConfigGroup } from './types/config-types';
 
 /**
  * Configuration describing how to load and parse the config files
@@ -23,25 +24,10 @@ export interface ConfigurationProps {
     filterByCurrentAccount?: boolean 
 }
 
-/**
- * A ConfigGroup is a representation of a config file with values inside it flattened out.
- * Some metadata is added to it describing where the values came from, which are useful when deploying
- */
-export interface ConfigGroup {
-    relativePath: string
-    fullPath: string
-    // configSets are a key value pair, where the key is a valid SSM path.
-    configSets: { [key: string]: string }
-    /**
-     *  configGroupName equals the file name that the config came from. 
-     * ex dev.yaml will become 'dev'.
-     */
-    configGroupName: string
-}
-
 // TODO: accept a parameter 'templateBreakoutDepth' that will split out templates into folders by depth. 
 //       as is would represent a value of 0 in that param
 export class ConfigLoader {
+    
 
     private rootDir: string
     public ssmRootPath: string;
@@ -71,14 +57,14 @@ export class ConfigLoader {
      * 
      * Call this if you want to eyeball the values that would end up in SSM.
      */
-    public printConfiguration(){
+    public printConfiguration(configGroup: ConfigGroup[]){
 
         console.log(" - - - Configuration - - - ")
         console.log(`Config Root Directory: ${this.rootDir}`)
         console.log(`Ssm Target Root Path: ${this.ssmRootPath}`)
         console.log(`Config Values: `)
 
-        this._configuration.forEach(configGroup => {
+        configGroup.forEach(configGroup => {
             Object.keys(configGroup.configSets).forEach((key)=> {
                 const value = configGroup.configSets[key]
                 console.log(`  ${key}:   ${value}`)
