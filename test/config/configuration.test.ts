@@ -49,7 +49,7 @@ describe('environmental variables', () => {
     const conf = new config.ConfigLoader({ ssmRootPath: '/test/digital', rootDir: testRoot })
     const configGroups = conf['getListOfConfigFiles'](testRoot)
 
-    expect(configGroups).toHaveLength(4)
+    expect(configGroups).toHaveLength(8)
   })
 
   test('Determines a path should not be rendered when account filtering active ', () => {
@@ -147,13 +147,12 @@ describe('environmental variables', () => {
 
   test('Integration - Loads full config path into key / value pairs', () => {
     const testRoot = path.resolve(__dirname + '../../data/config');
-
     const conf = new config.ConfigLoader({ ssmRootPath: '/level1/level2', rootDir: testRoot })
-
     const result = conf.load();
 
     result.forEach(group => {
       group.configSets
     });
   })
+
 })

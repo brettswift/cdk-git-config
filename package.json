@@ -16,7 +16,7 @@
     "release-major": "standard-version -r major && npm run postversion",
     "build": "tsc",
     "watch": "tsc -w",
-    "test": "jest",
+    "test": "npm run build; jest",
     "cdk": "cdk"
   },
   "keywords": [

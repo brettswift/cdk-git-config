@@ -3,6 +3,7 @@ import glob = require('glob')
 import flat = require('flat')
 import fs = require('fs');
 import assert = require('assert')
+import { ConfigGroup } from './types/config-types';
 
 /**
  * Configuration describing how to load and parse the config files
@@ -23,25 +24,8 @@ export interface ConfigurationProps {
     filterByCurrentAccount?: boolean 
 }
 
-/**
- * A ConfigGroup is a representation of a config file with values inside it flattened out.
- * Some metadata is added to it describing where the values came from, which are useful when deploying
- */
-export interface ConfigGroup {
-    relativePath: string
-    fullPath: string
-    // configSets are a key value pair, where the key is a valid SSM path.
-    configSets: { [key: string]: string }
-    /**
-     *  configGroupName equals the file name that the config came from. 
-     * ex dev.yaml will become 'dev'.
-     */
-    configGroupName: string
-}
-
-// TODO: accept a parameter 'templateBreakoutDepth' that will split out templates into folders by depth. 
-//       as is would represent a value of 0 in that param
 export class ConfigLoader {
+    
 
     private rootDir: string
     public ssmRootPath: string;
@@ -64,27 +48,6 @@ export class ConfigLoader {
             throw new assert.AssertionError({message: "Configuration is empty. Please call load()."})
         }
         return this._configuration
-    }
-
-    /**
-     * Prints configuration to STDOUT.
-     * 
-     * Call this if you want to eyeball the values that would end up in SSM.
-     */
-    public printConfiguration(){
-
-        console.log(" - - - Configuration - - - ")
-        console.log(`Config Root Directory: ${this.rootDir}`)
-        console.log(`Ssm Target Root Path: ${this.ssmRootPath}`)
-        console.log(`Config Values: `)
-
-        this._configuration.forEach(configGroup => {
-            Object.keys(configGroup.configSets).forEach((key)=> {
-                const value = configGroup.configSets[key]
-                console.log(`  ${key}:   ${value}`)
-            })
-        })
-        console.log(' - - - ')
     }
 
     public load(): ConfigGroup[] {
@@ -117,9 +80,9 @@ export class ConfigLoader {
         if(!this.filterByCurrentAccount) return true
         if(!path.includes('account')) return true
 
-        const currAccount = process.env.CDK_DEFAULT_ACCOUNT
-        if(!currAccount) throw new Error("Expected to find CDK account from environment variable process.env.CDK_DEFAULT_ACCOUNT but did not.")
-        return path.includes(currAccount)
+        const currAccount = process.env.CDK_DEFAULT_ACCOUNT;
+        if(!currAccount) throw new Error("Expected to find CDK account from environment variable process.env.CDK_DEFAULT_ACCOUNT but did not.");
+        return path.includes(currAccount);
     }
 
     /**
@@ -131,22 +94,22 @@ export class ConfigLoader {
         const files = glob.sync(globPath);
 
         if(files.length == 0){
-            throw new assert.AssertionError({message: `Expected to find some files with glob search: ${globPath} but did not.`})
+            throw new assert.AssertionError({message: `Expected to find some files with glob search: ${globPath} but did not.`});
         }
-        let configGroups: ConfigGroup[] = []
-        let group: ConfigGroup
+        let configGroups: ConfigGroup[] = [];
+        let group: ConfigGroup;
 
         files.forEach(filePath => {
             // examples are from the example/config project.
             //fullFilePathPart: app1/bswift.yaml
-            const fullFilePathPart = filePath.replace(`${rootDir}/`,'')
+            const fullFilePathPart = filePath.replace(`${rootDir}/`,'');
             //parentFolderRelativeToRoot: app1/bswift
-            const parentFolderRelativeToRoot = fullFilePathPart.substring(0, fullFilePathPart.indexOf('.'))
+            const parentFolderRelativeToRoot = fullFilePathPart.substring(0, fullFilePathPart.indexOf('.'));
             //configRoot: /gitconfigstore/root/app1/bswift
-            const configRoot = `${this.ssmRootPath}/${parentFolderRelativeToRoot}`
+            const configRoot = `${this.ssmRootPath}/${parentFolderRelativeToRoot}`;
             //relativeFilePath: ./app1/bswift.yaml
             const relativeFilePath = `.${filePath.substring(rootDir.length)}`;
-            const fileContents: object = this.loadYamlFile(filePath)
+            const fileContents: object = this.loadYamlFile(filePath);
 
             if(! this.shouldRenderPath(fullFilePathPart)) return;
            
@@ -155,7 +118,7 @@ export class ConfigLoader {
                 relativePath: relativeFilePath,
                 fullPath: filePath,
                 configGroupName: parentFolderRelativeToRoot,
-                configSets: this.getValuesFromFileObject(fileContents, configRoot)
+                configSets: this.getValuesFromFileObject(fileContents, configRoot),
             } as ConfigGroup
 
             configGroups.push(group);
@@ -188,13 +151,13 @@ export class ConfigLoader {
         // TODO: could get rid of this 'flat' dependency and bring that method in.
         const flattened = flat(fileContents,
             { delimiter: '/' }
-        )as {[key: string]: string }
-        let result: {[key: string]: string } = {}
+        )as {[key: string]: string };
+        let result: {[key: string]: string } = {};
 
         Object.keys(flattened).forEach((key) => {
-            const value = flattened[key]
-            const theKey = this.filterAccountFromSsmKey(`${ssmRootPath}/${key}`)
-            result[theKey] = value
+            const value = flattened[key];
+            const theKey = this.filterAccountFromSsmKey(`${ssmRootPath}/${key}`);
+            result[theKey] = value;
         })
         return result;
 
