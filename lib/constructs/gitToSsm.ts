@@ -1,5 +1,5 @@
-import cdk = require('@aws-cdk/core');
-import ssm = require('@aws-cdk/aws-ssm')
+import * as cdk from 'constructs';
+import { aws_ssm as ssm } from 'aws-cdk-lib';
 
 import { ConfigGroup } from '../config/types/config-types';
 
@@ -14,8 +14,8 @@ export class GitToSsm extends cdk.Construct {
     super(scope, id);
 
     props.configuration.forEach(configGroup => {
-      
-      Object.keys(configGroup.configSets).forEach((key)=> {
+
+      Object.keys(configGroup.configSets).forEach((key) => {
 
         const value = configGroup.configSets[key]
 
@@ -26,6 +26,7 @@ export class GitToSsm extends cdk.Construct {
           stringValue: `${value}`,
         })
 
-    });
-  })
-}}
+      });
+    })
+  }
+}
