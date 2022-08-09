@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.0](https://github.com/brettswift/cdk-git-config/compare/v0.5.3...v0.6.0) (2022-08-09)
+
+
+### Features
+
+* 🎸 move support to cdk 2 ([81f78f8](https://github.com/brettswift/cdk-git-config/commit/81f78f8c4e33c08ff4e1c9d9c45240fa2ce6e2c6))
+
 ### [0.5.3](https://github.com/brettswift/cdk-git-config/compare/v0.5.2...v0.5.3) (2021-09-03)
 
 ### [0.5.2](https://github.com/brettswift/cdk-git-config/compare/v0.5.0...v0.5.2) (2021-09-03)
