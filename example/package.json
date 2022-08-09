@@ -11,19 +11,19 @@
     "cdk": "cdk"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^1.119.0",
-    "@aws-cdk/aws-ssm": "^1.119.0",
+    "@aws-cdk/assert": "^2.35.0",
     "@types/jest": "^27.0.1",
     "@types/node": "16.7.1",
-    "aws-cdk": "^1.119.0",
+    "aws-cdk": "^2.35.0",
+    "cdk-git-config": "file:../",
     "jest": "^27.0.6",
     "ts-jest": "^27.0.5",
     "ts-node": "^10.2.1",
-    "cdk-git-config": "file:../",
     "typescript": "~4.3.5"
   },
   "dependencies": {
-    "@aws-cdk/core": "^1.119.0",
+    "aws-cdk-lib": "^2.35.0",
+    "constructs": "^10.1.70",
     "source-map-support": "^0.5.19"
   }
 }

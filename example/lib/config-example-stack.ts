@@ -1,5 +1,5 @@
-import cdk = require('@aws-cdk/core');
-
+import * as cdk from 'aws-cdk-lib';
+import * as constructs from 'constructs'
 import configParser = require('../../lib/config/configuration')
 import { splitGroupsAtPathDepth }  from '../../lib/config/config-splitter';
 
@@ -10,7 +10,7 @@ import * as gitConfig from '../../lib';
 
 const ssmRootPath = '/gitconfigstore/root';
 export class ConfigExampleStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: constructs.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     // The code that defines your stack goes here
