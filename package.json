@@ -1,6 +1,6 @@
 {
   "name": "cdk-git-config",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
   "author": "brettswift@gmail.com",
