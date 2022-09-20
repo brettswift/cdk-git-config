@@ -23,7 +23,6 @@ export class SsmGateway {
         }
     }
 
-
     public async putParameter(name: string, value: string): Promise<void> {
         log.debug(`api: aws ssm put-parameter`, {name, value})
 
@@ -40,6 +39,9 @@ export class SsmGateway {
             )
             
             if(!result.Version) throw Error(`Failed Updating parameter: ${value}`);
+            log.debug(`Put Parameter Success`, {
+                Version: result.Version,
+            })
             return;
 
         } catch (error) {

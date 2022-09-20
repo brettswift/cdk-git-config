@@ -1,6 +1,6 @@
 {
   "name": "cdk-git-config",
-  "version": "0.6.3-12",
+  "version": "0.6.4-45",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "author": "brettswift@gmail.com",
@@ -27,6 +27,12 @@
     "@aws-cdk/core": "^1.119.0"
   },
   "files": [
+    "lib",
+    "/lib/**/*.ts",
+    "/lib/**/*.d.ts",
+    "/lambda/src/**/*.ts",
+    "/lambda/*.json",
+    "/lambda/node_modules/*",
     "/lib/**/*.ts",
     "/lib/lambdas/ssmPublisher/*.ts"
   ],

@@ -1,5 +1,5 @@
 import * as constructs from 'constructs';
-import { aws_ssm as ssm } from 'aws-cdk-lib';
+// import { aws_ssm as ssm } from 'aws-cdk-lib';
 import { custom_resources as cr } from 'aws-cdk-lib';
 import { aws_lambda as lambda } from 'aws-cdk-lib';
 import { ConfigGroup } from '../config/types/config-types';
@@ -8,13 +8,14 @@ import * as cdk from 'aws-cdk-lib';
 import { aws_lambda_nodejs as nodeLambda } from 'aws-cdk-lib';
 import * as path from 'path';
 import { SLEEP_SECONDS } from '../lambdas/ssmPublisher/handler';
+import { aws_iam as iam } from 'aws-cdk-lib';
 
 export interface GitToSsmProps {
   configuration: ConfigGroup[];
   ssmRootPath: string;
 }
 
-const CUSTOM_RESOURCE_TYPE = 'Custom::SsmParameterProvider';
+export const CUSTOM_RESOURCE_TYPE = 'Custom::SsmParameterProvider';
 /**
  * The lambda will wait a maximum of this time
  * (but randomly between 0 and this time).
@@ -46,14 +47,25 @@ export class GitToSsm extends constructs.Construct {
       }
     });
 
-    const ssmProvider = new cr.Provider(this, 'SleepProvider', {
+    if(!props.ssmRootPath) throw Error("Ssm Root Path can not be undefined")
+
+    const ssmPolicy = new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['ssm:*'],
+      resources: [
+        `*`,
+        // TODO:uncomment and test 
+        // `arn:aws:ssm:${cdk.Stack.of(this).region}::parameter${props.ssmRootPath}`,
+        // `arn:aws:ssm:${cdk.Stack.of(this).region}::parameter${props.ssmRootPath}/*`,
+      ],
+    });
+    handler.addToRolePolicy(ssmPolicy);
+    handler.role?.addToPrincipalPolicy(ssmPolicy);
+
+
+    const ssmProvider = new cr.Provider(this, 'ssmProvider', {
       onEventHandler: handler,
       logRetention: logs.RetentionDays.ONE_MONTH,
-    });
-
-    const ssmSleeper = new cdk.CustomResource(this, 'SleepCR', {
-      serviceToken: ssmProvider.serviceToken,
-      resourceType: CUSTOM_RESOURCE_TYPE,
     });
 
     props.configuration.forEach(configGroup => {
@@ -61,15 +73,17 @@ export class GitToSsm extends constructs.Construct {
       Object.keys(configGroup.configSets).forEach((key) => {
 
         const value = configGroup.configSets[key]
-
-        const param = new ssm.StringParameter(this, `${props.ssmRootPath}-${configGroup.configGroupName}-${key}`, {
-          description: `from file: ${configGroup.relativePath}`,
-          parameterName: key,
-          type: ssm.ParameterType.STRING,
-          stringValue: `${value}`,
-        })
-
-        param.node.addDependency(ssmSleeper);
+       
+        const encodedKey = Buffer.from(key, 'binary').toString('base64');
+        new cdk.CustomResource(this, `${encodedKey}CR`, {
+          serviceToken: ssmProvider.serviceToken,
+          resourceType: CUSTOM_RESOURCE_TYPE,
+          properties: {
+            PARAM_NAME: `${key}`,
+            PARAM_VALUE: `${value}`,
+          },
+        
+        });
       });
     })
   }
