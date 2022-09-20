@@ -1,0 +1,77 @@
+[
+    {
+        "relativePath": "./v1/services/alerta-events/cicd/infra.yaml",
+        "fullPath": "/Users/bswift/src/aws/cdk-apps/automation/config-automation/shaw-aws-configuration-nonprod/config/v1/services/alerta-events/cicd/infra.yaml",
+        "configGroupName": "v1/services/alerta-events/cicd/infra",
+        "configSets": {
+            "/dev-config/bswift/v1/services/alerta-events/cicd/infra/apiKeySecretArn": "arn:aws:secretsmanager:us-west-2:778701763332:secret:dt-cicd-alerta-api-key-KHncDC",
+            "/dev-config/bswift/v1/services/alerta-events/cicd/infra/alertaUrl": "https://alerta.cicd.dt.aws.shaw.ca"
+        },
+        "configSetArray": [
+            {
+                "key": "/dev-config/bswift/v1/services/alerta-events/cicd/infra/apiKeySecretArn",
+                "value": "arn:aws:secretsmanager:us-west-2:778701763332:secret:dt-cicd-alerta-api-key-KHncDC"
+            },
+            {
+                "key": "/dev-config/bswift/v1/services/alerta-events/cicd/infra/alertaUrl",
+                "value": "https://alerta.cicd.dt.aws.shaw.ca"
+            }
+        ],
+        "configGroupRoot": "/dev-config/bswift/v1/services/alerta-events/cicd/infra"
+    },
+    {
+        "relativePath": "./v1/services/alerta-events/cicdplaypen/infra.yaml",
+        "fullPath": "/Users/bswift/src/aws/cdk-apps/automation/config-automation/shaw-aws-configuration-nonprod/config/v1/services/alerta-events/cicdplaypen/infra.yaml",
+        "configGroupName": "v1/services/alerta-events/cicdplaypen/infra",
+        "configSets": {
+            "/dev-config/bswift/v1/services/alerta-events/cicdplaypen/infra/apiKeySecretArn": "arn:aws:secretsmanager:us-west-2:964705782699:secret:dt-cicd-alerta-api-key-pbaGSj",
+            "/dev-config/bswift/v1/services/alerta-events/cicdplaypen/infra/alertaUrl": "https://alerta.cicd.dt.aws.shaw.ca"
+        },
+        "configSetArray": [
+            {
+                "key": "/dev-config/bswift/v1/services/alerta-events/cicdplaypen/infra/apiKeySecretArn",
+                "value": "arn:aws:secretsmanager:us-west-2:964705782699:secret:dt-cicd-alerta-api-key-pbaGSj"
+            },
+            {
+                "key": "/dev-config/bswift/v1/services/alerta-events/cicdplaypen/infra/alertaUrl",
+                "value": "https://alerta.cicd.dt.aws.shaw.ca"
+            }
+        ],
+        "configGroupRoot": "/dev-config/bswift/v1/services/alerta-events/cicdplaypen/infra"
+    },
+    {
+        "relativePath": "./v1/services/alerta-events/common/infra.yaml",
+        "fullPath": "/Users/bswift/src/aws/cdk-apps/automation/config-automation/shaw-aws-configuration-nonprod/config/v1/services/alerta-events/common/infra.yaml",
+        "configGroupName": "v1/services/alerta-events/common/infra",
+        "configSets": {
+            "/dev-config/bswift/v1/services/alerta-events/common/infra/nothing": "here"
+        },
+        "configSetArray": [
+            {
+                "key": "/dev-config/bswift/v1/services/alerta-events/common/infra/nothing",
+                "value": "here"
+            }
+        ],
+        "configGroupRoot": "/dev-config/bswift/v1/services/alerta-events/common/infra"
+    },
+    {
+        "relativePath": "./v1/services/alerta-events/dtestaging/infra.yaml",
+        "fullPath": "/Users/bswift/src/aws/cdk-apps/automation/config-automation/shaw-aws-configuration-nonprod/config/v1/services/alerta-events/dtestaging/infra.yaml",
+        "configGroupName": "v1/services/alerta-events/dtestaging/infra",
+        "configSets": {
+            "/dev-config/bswift/v1/services/alerta-events/dtestaging/infra/apiKeySecretArn": "arn:aws:secretsmanager:us-west-2:778701763332:secret:defaultApiKey6A088BEF-I5b4ZsrC2MLZ-SO5tFH",
+            "/dev-config/bswift/v1/services/alerta-events/dtestaging/infra/alertaUrl": "https://dtestaging-alerta.nonprod.dsl.aws.shaw.ca"
+        },
+        "configSetArray": [
+            {
+                "key": "/dev-config/bswift/v1/services/alerta-events/dtestaging/infra/apiKeySecretArn",
+                "value": "arn:aws:secretsmanager:us-west-2:778701763332:secret:defaultApiKey6A088BEF-I5b4ZsrC2MLZ-SO5tFH"
+            },
+            {
+                "key": "/dev-config/bswift/v1/services/alerta-events/dtestaging/infra/alertaUrl",
+                "value": "https://dtestaging-alerta.nonprod.dsl.aws.shaw.ca"
+            }
+        ],
+        "configGroupRoot": "/dev-config/bswift/v1/services/alerta-events/dtestaging/infra"
+    }
+]

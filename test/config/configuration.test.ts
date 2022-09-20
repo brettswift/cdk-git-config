@@ -154,5 +154,4 @@ describe('environmental variables', () => {
       group.configSets
     });
   })
-
 })
