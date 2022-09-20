@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
     "target":"ES2019",
     "module": "commonjs",
     "lib": ["es2019", "es2019.object", "es2019.string", "ES2019"],
@@ -18,7 +17,7 @@
     "inlineSources": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization":false,
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types"],
   },
   "exclude": [
       "cdk.out",
