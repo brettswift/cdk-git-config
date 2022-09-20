@@ -1,22 +1,21 @@
 {
   "name": "cdk-git-config",
-  "version": "0.6.2",
-  "main": "dist/lib/index.js",
-  "types": "dist/lib/index.d.ts",
+  "main": "lib/entrypoint.js",
+  "version": "0.8.1-5",
+  "types": "lib/index.d.ts",
   "author": "brettswift@gmail.com",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brettswift/cdk-git-config.git"
   },
+  "bin": {
+    "cdk-git-config": "bin/entrypoint.js"
+  },
   "scripts": {
-    "preversion": "npm test",
-    "postversion": "git push --follow-tags origin master",
-    "release-patch": "standard-version -r patch && npm run postversion",
-    "release-minor": "standard-version -r minor && npm run postversion",
-    "release-major": "standard-version -r major && npm run postversion",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "npm run build; jest",
+    "test-watch": "tsc -w && jest",
     "cdk": "cdk"
   },
   "keywords": [
@@ -25,29 +24,40 @@
     "ssm",
     "git"
   ],
-  "peerDependencies": {
-    "@aws-cdk/core": "^1.119.0"
-  },
+  "files": [
+    "lib",
+    "/lib/**/*.ts",
+    "/lib/**/*.d.ts",
+    "/lambda/src/**/*.ts",
+    "/lambda/*.json",
+    "/lambda/node_modules/*",
+    "/lib/**/*.ts",
+    "/lib/lambdas/ssmPublisher/*.ts"
+  ],
   "devDependencies": {
-    "@types/node": "^18.6.5",
+    "@types/node": "^18.7.18",
     "aws-cdk": "^2.36.0",
+    "aws-sdk": "^2.1221.0",
+    "aws-sdk-client-mock": "^2.0.0",
     "standard-version": "^9.5.0",
-    "ts-jest": "^28.0.7",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.7.4"
+    "ts-jest": "^28.0.8",
+    "typescript": "^4.8.3"
   },
   "dependencies": {
-    "@aws-cdk/assert": "^2.36.0",
+    "@aws-sdk/client-ssm": "^3.171.0",
+    "@aws-sdk/middleware-retry": "^3.171.0",
+    "@types/aws-lambda": "^8.10.104",
     "@types/flat": "5.0.2",
+    "cmd-ts": "^0.11.0",
     "@types/glob": "^7.2.0",
-    "@types/jest": "^28.1.6",
+    "@types/jest": "^28.1.8",
     "@types/js-yaml": "^4.0.5",
-    "aws-cdk-lib": "^2.36.0",
-    "constructs": "^10.1.71",
+    "@types/lambda-log": "^2.2.1",
     "flat": "^5.0.2",
     "glob": "^8.0.3",
     "jest": "^28.1.3",
     "js-yaml": "^4.1.0",
+    "lambda-log": "^3.1.0",
     "source-map-support": "^0.5.21"
   }
 }
