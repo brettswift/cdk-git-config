@@ -37,12 +37,14 @@ describe('config-splitter', () => {
   })
 
   test('Should get filter name from config group and depth', () => {
-    const configGroup = {
+    const configGroup: ConfigGroup = {
       relativePath: './app1/common.yaml',
       fullPath: '/var/config/app1/common.yaml',
       configGroupName: 'app1/common',
-      configSets: { '/gitconfigstore/root/account/111111111111/vpc-id': '123456' }
-    } as ConfigGroup
+      configSets: { '/gitconfigstore/root/account/111111111111/vpc-id': '123456' },
+      configSetArray: [{ key: '/gitconfigstore/root/account/111111111111/vpc-id', value: '123456' }],
+      configGroupRoot: '/var/config/app1',
+    } 
  
     expect(getFilterName(configGroup,2)).toEqual('app1/common')
     expect(getFilterName(configGroup,1)).toEqual('app1')
