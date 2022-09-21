@@ -11,9 +11,17 @@ export class SsmGateway {
         
         if (!ssmClient) {
 
-            const maxAttemptsProvider: Provider<number> = () => Promise.resolve(10);
+            // const MAXIMUM_RETRY_DELAY = 20 * 1000;
 
-            const adaptiveRetry = new retryMiddleware.AdaptiveRetryStrategy(maxAttemptsProvider, {});
+            const maxAttemptsProvider: Provider<number> = () => Promise.resolve(10);
+            // const delayDecider = (delayBase: number, attempts: number) =>{
+            //     Math.floor(
+            //         Math.min(MAXIMUM_RETRY_DELAY, Math.random() * 2 ** attempts * delayBase)
+            //     );
+            // }
+
+            const adaptiveRetry = new retryMiddleware.AdaptiveRetryStrategy(maxAttemptsProvider, {
+            });
             this.ssmClient = new ssm.SSMClient({
                 retryStrategy: adaptiveRetry,
             })
@@ -31,8 +39,8 @@ export class SsmGateway {
 
             result = await this.ssmClient.send(
                 new ssm.PutParameterCommand({ 
-                    Name: name,
-                    Value: value,
+                    Name: `${name}`,
+                    Value: `${value}`,
                     Overwrite: true, 
                     Type: ssm.ParameterType.STRING,
                 })
@@ -52,6 +60,34 @@ export class SsmGateway {
         }
     }
 
+    /**
+     * 
+     * @returns a list of ssmParameters, if nothing is found, an empty list is returned.
+     */
+    public async getParametersByPath(path: string): Promise<ssm.Parameter[]> {
+        log.debug(`api: aws ssm get-parameters-by-path`, {path})
+
+        let result: ssm.GetParametersByPathCommandOutput;
+        try {
+           
+            result = await this.ssmClient.send(
+                new ssm.GetParametersByPathCommand({ 
+                    Path: path,
+                })
+            )
+            
+            if(!result) throw Error(`Failed retrieving parameters by path: ${path}`);
+
+            return result.Parameters || []; 
+        } catch (error) {
+            log.error("Unexpected error retrieving SSM Parameters", { 
+                error
+             })
+            throw error
+        }
+    }
+
+
     public async deleteParameter(name: string): Promise<void> {
         log.debug(`api: aws ssm delete-parameter`, {name})
 
@@ -60,7 +96,7 @@ export class SsmGateway {
 
             result = await this.ssmClient.send(
                 new ssm.DeleteParameterCommand({ 
-                    Name: name,
+                    Name: name
                 })
             )
             
@@ -69,6 +105,29 @@ export class SsmGateway {
 
         } catch (error) {
             log.error("Unexpected error deleting SSM Parameter", { 
+                error
+             })
+            throw error
+        }
+    }
+
+    public async deleteParameters(names: string[]): Promise<void> {
+        log.debug(`api: aws ssm delete-parameters`, {names})
+
+        let result: ssm.DeleteParametersCommandOutput;
+        try {
+
+            result = await this.ssmClient.send(
+                new ssm.DeleteParametersCommand({ 
+                    Names: names
+                })
+            )
+            
+            if(!result) throw Error(`Failed Deleting parameters: ${names}`);
+            return;
+
+        } catch (error) {
+            log.error("Unexpected error deleting SSM Parameters", { 
                 error
              })
             throw error

@@ -21,6 +21,7 @@ export const CUSTOM_RESOURCE_TYPE = 'Custom::SsmParameterProvider';
  * (but randomly between 0 and this time).
  */
 const MAX_INITIAL_SLEEP = 120;
+const LAMBDA_TIMEOUT = 5;
 export class GitToSsm extends constructs.Construct {
 
   constructor(readonly scope: constructs.Construct, readonly id: string, readonly props: GitToSsmProps) {
@@ -32,10 +33,13 @@ export class GitToSsm extends constructs.Construct {
 
     const handler = new nodeLambda.NodejsFunction(this.scope, `${this.id}handler`, {
       runtime,
-      entry: path.join(__dirname, `../lambdas/ssmPublisher/handler.js`),
+      // entry: path.join(__dirname, `../lambdas/ssmPublisher/individual-parameter-handler.ts`),
+      entry: path.join(__dirname, `../lambdas/ssmPublisher/bulk-parameter-handler.ts`),
       handler: 'handler',
       depsLockFilePath: 'npm-shrinkwrap.json',
-      timeout: cdk.Duration.seconds(MAX_INITIAL_SLEEP + 30),
+      timeout: cdk.Duration.seconds(LAMBDA_TIMEOUT),
+      retryAttempts: 1,
+      reservedConcurrentExecutions: 1,
       bundling: {
         banner: `/*Base64 Encoded config values: ${uniqueString} */`, // Important to keep - used to ensure a stack update.
         sourceMap: true,
@@ -43,11 +47,12 @@ export class GitToSsm extends constructs.Construct {
         keepNames: true,
       },
       environment: {
+        // TODO: remove, deprecated here.
         [SLEEP_SECONDS]: MAX_INITIAL_SLEEP.toString(),
       }
     });
 
-    if(!props.ssmRootPath) throw Error("Ssm Root Path can not be undefined")
+    if (!props.ssmRootPath) throw Error("Ssm Root Path can not be undefined")
 
     const ssmPolicy = new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
@@ -68,12 +73,49 @@ export class GitToSsm extends constructs.Construct {
       logRetention: logs.RetentionDays.ONE_MONTH,
     });
 
+
+    // this.createResourcePerParameter(props, ssmProvider);
+    this.createResourcePerConfigTree(props, ssmProvider);
+  }
+
+
+  /**
+   * Designed to be used with: bulk-parameter-handler.ts
+   * 
+   * The tree coming in will have one service and multiple namespaces - in their own config set.
+   */
+  private createResourcePerConfigTree(props: GitToSsmProps, ssmProvider: cr.Provider) {
+
+    const configGroups = JSON.stringify(props.configuration);
+
+    // console.log(JSON.stringify(configGroups, undefined, 2))
+    // TODO: for testing, remove.
+    // for (const configGroup of props.configuration) {
+    //   console.log(`Root: ${configGroup.configGroupRoot} ConfigSetCount: ${configGroup.configSetArray.length}`)
+    //   configGroup.configSetArray.forEach(x => {console.log(` .  ${x.key} --> ${x.value}`)})
+    // }
+
+    // TODO: is this key / id too big? 
+    const encodedKey = Buffer.from(configGroups, 'binary').toString('base64');
+    new cdk.CustomResource(this, `${encodedKey}CR`, {
+      serviceToken: ssmProvider.serviceToken,
+      resourceType: CUSTOM_RESOURCE_TYPE,
+      properties: {
+        CONFIG_GROUPS: `${configGroups}`,
+      },
+    });
+  }
+
+  /**
+   * Designed to be used with: individual-parameter-handler.ts
+   */
+  public createResourcePerParameter(props: GitToSsmProps, ssmProvider: cr.Provider) {
     props.configuration.forEach(configGroup => {
 
       Object.keys(configGroup.configSets).forEach((key) => {
 
-        const value = configGroup.configSets[key]
-       
+        const value = configGroup.configSets[key];
+
         const encodedKey = Buffer.from(key, 'binary').toString('base64');
         new cdk.CustomResource(this, `${encodedKey}CR`, {
           serviceToken: ssmProvider.serviceToken,
@@ -82,9 +124,8 @@ export class GitToSsm extends constructs.Construct {
             PARAM_NAME: `${key}`,
             PARAM_VALUE: `${value}`,
           },
-        
         });
       });
-    })
+    });
   }
 }

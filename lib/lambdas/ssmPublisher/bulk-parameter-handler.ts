@@ -1,6 +1,7 @@
 import * as lambda from 'aws-lambda';
 import * as log from 'lambda-log';
-import { SsmGateway } from './ssm-param-gateway';
+import { ConfigGroup } from '../..';
+import { SsmService } from './ssm-service';
 
 /** Exports here are used by the cdk infrastructure */
 export const SLEEP_SECONDS = 'SLEEP_SECONDS';
@@ -21,29 +22,28 @@ export async function handler(event: lambda.CloudFormationCustomResourceEvent): 
         throw new Error(err);
     }
 
-    if (!process.env[SLEEP_SECONDS]) throw Error("SLEEP_SECONDS parameter not found.")
+    // if (!process.env[SLEEP_SECONDS]) throw Error("SLEEP_SECONDS parameter not found.")
 
     try {
         // uncomment to spread out the load on SSM a little further.
         // const sleepSec: number = parseInt(process.env[SLEEP_SECONDS])
         // await sleep(sleepSec);
 
-        const paramName = event.ResourceProperties['PARAM_NAME']
-        const paramValue = event.ResourceProperties['PARAM_VALUE']
-        console.log(event.ResourceProperties)
+        const configs = event.ResourceProperties['CONFIG_GROUPS']
+        log.info("CONFIG_GROUPS", event.ResourceProperties)
+        const configGroups: ConfigGroup[] = JSON.parse(configs)
 
-        if(!paramName) throw Error(`Expected to find env var PARAM_NAME but did not.`);
-        if(!paramValue) throw Error(`Expected to find env var PARAM_VALUE but did not.`);
+        if(!configGroups) throw Error(`Expected to find env var PARAM_NAME but did not.`);
 
-        const ssmGateway = new SsmGateway();
+        const ssmService = new SsmService();
 
         switch (event.RequestType) {
             case 'Create':
             case 'Update':
-                await ssmGateway.putParameter(paramName, paramValue);
+                await ssmService.updateParameters(configGroups) 
                 break;
             case 'Delete':
-                await ssmGateway.deleteParameter(paramName);
+                await ssmService.deleteParameters(configGroups);
                 break;
             default:
                 // RequestType is an implicitly typed string/enum and only has the 3 options above.
