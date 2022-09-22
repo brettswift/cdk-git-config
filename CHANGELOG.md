@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.1-0](https://github.com/brettswift/cdk-git-config/compare/v0.6.2...v0.7.1-0) (2022-09-22)
+
+
+### Features
+
+* 🎸  move ssm parameter updates into a more intelligent lambda ([fd52450](https://github.com/brettswift/cdk-git-config/commit/fd52450d2de2dfa4bb7e797453613a8e07148a0d))
+
 ### [0.6.2](https://github.com/brettswift/cdk-git-config/compare/v0.6.1...v0.6.2) (2022-08-09)
 
 ### [0.6.1](https://github.com/brettswift/cdk-git-config/compare/v0.6.0...v0.6.1) (2022-08-09)
