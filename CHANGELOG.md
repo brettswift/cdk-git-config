@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.2](https://github.com/brettswift/cdk-git-config/compare/v0.8.1...v0.8.2) (2022-09-28)
+
+
+### Bug Fixes
+
+* 🐛 exit code should be non zero on failure ([7fe7b7c](https://github.com/brettswift/cdk-git-config/commit/7fe7b7c7dcfcdf8d28bab355fbcaf3cdcda28919))
+
 ### [0.8.1](https://github.com/brettswift/cdk-git-config/compare/v0.6.2...v0.8.1) (2022-09-28)
 
 
