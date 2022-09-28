@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.1](https://github.com/brettswift/cdk-git-config/compare/v0.6.2...v0.8.1) (2022-09-28)
+
+
+### Features
+
+* 🎸  run as a cli command instead of using cloudformation ([36c0251](https://github.com/brettswift/cdk-git-config/commit/36c02519647fbbd288c74ca99c5570456feef6ce))
+
 ### [0.6.2](https://github.com/brettswift/cdk-git-config/compare/v0.6.1...v0.6.2) (2022-08-09)
 
 ### [0.6.1](https://github.com/brettswift/cdk-git-config/compare/v0.6.0...v0.6.1) (2022-08-09)
