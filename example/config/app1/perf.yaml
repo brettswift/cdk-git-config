@@ -1,9 +1,0 @@
-MonkeyProvider:
-  url: http://dev.monkey.com
-Logging:
-  LogLevel:
-    Default: Information
-cluster:
-  desiredCapacity: 4
-  instanceType: M5.small
-  

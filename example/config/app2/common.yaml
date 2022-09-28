@@ -1,7 +1,0 @@
-Logging:
-  LogLevel:
-    Default: Information
-cluster:
-  desiredCapacity: 2
-  instanceType: M5.small
-  
