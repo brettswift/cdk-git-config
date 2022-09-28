@@ -5,6 +5,7 @@ import path = require('path');
 import * as cmdTs from 'cmd-ts';
 import { StsGateway } from '../lib/gateways/sts-gateway';
 import { SsmService } from '../lib/services/ssm-service';
+import { exit } from 'process';
 
 export function resolveSsmRootDirectory(namespace: string): string {
     if (namespace === 'live') {
@@ -110,5 +111,6 @@ log.options.debug = true;
     } catch (e) {
         // Deal with the fact the chain failed
         log.info("error", { error: e });
+        exit(1);
     }
 })();
