@@ -17,14 +17,57 @@ Key advantages:
 * Pull Requests, added options for reviewing configuration (prod & dev)
 * Easy to replicate into new accounts.
 
-## Example
+## Configuration
 
-See the examples folder for a deployable stack you can use to evaluate.
+There's a minimal configuration in SSM required.  The configuration tells this app which SSM root path to deploy the configuration tree.
+
+You must supply `/config-root-deploy-targets/default`.   Optionally, or additionally, you can swap out 'default' for a specific namespace.
+
+### Determining deployment path
+
+1. If you run this app with a namespace that does not have configuration, that namespace is tacked onto the default path.
+2. If your namespace is conifigured, it will run directly at that path.
+
+### Example Configuration2. If your namespace is conifigured, it will run directly at that path
+
+### Example Configuration
+
+Given this configuration:
+
+``` yaml
+/config-root-deploy-targets/default: /dev-config
+/config-root-deploy-targets/bswift: /dev-config
+/config-root-deploy-targets/live: /live-config
+```
+
+Running this app with the following parameters will result in configuration at the following paths:
+
+1. `cdk-git-config --namespace jsmith --configDir ./
+   1. uses ssm root of `/dev-config/jsmith`
+2. `cdk-git-config --namespace bswift --configDir ./
+   1. uses ssm root of `/dev-config`
+3. `cdk-git-config --namespace live --configDir ./
+   1. uses ssm root of `/live-config`
+
+**Recommended usage**: configure a default path, which all development namespaces can use to deploy to.  Configure a production namespace explicitly.
+
+## Example execution (development)
+
+``` bash
+# minimal configuration for this app to run.
+# will result in /dev-config/{namespace}/...configuration
+aws ssm put-parameter --name /config-root-deploy-targets/default  --value "/dev-config" --type String --overwrite
+# will result in /live-config/v1/...configuration
+aws ssm put-parameter --name /config-root-deploy-targets/live  --value "/live-config/v1" --type String --overwrite
+
+npm i && npm run build
+ ts-node bin/entrypoint.ts --namespace bswift --configDir test/data/config/
+```
 
 ## Deficiencies / TODO
 
 * Secure parameters - currently not supported
-* Include a CodePipeline construct, as automating this is critical.
+* Include a CodePipeline / step function construct, as automating this is critical.
 
 ## Releasing
 
@@ -36,7 +79,6 @@ See the examples folder for a deployable stack you can use to evaluate.
         * create the tag, and commit
         * Finally push the tag and commit up
         * Travis will run the build and release to NPM.
-
 
 ## Contributing
 

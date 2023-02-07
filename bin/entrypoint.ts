@@ -5,25 +5,56 @@ import path = require('path');
 import * as cmdTs from 'cmd-ts';
 import { StsGateway } from '../lib/gateways/sts-gateway';
 import { SsmService } from '../lib/services/ssm-service';
-import { exit } from 'process';
+import { ConfigService, CONFIG_DESTINATION_CONFIG_ROOT, DEFAULT_TARGET_NAMESPACE } from '../lib/services/config-service';
 
-export function resolveSsmRootDirectory(namespace: string): string {
-    if (namespace === 'live') {
-        return '/dt-config';
-    } else {
-        return `/dev-config/${namespace}`
+/**
+ * Example configuration:
+ *     /config-deploy-namespaces/default: /dev-config/
+ *     /config-deploy-namespaces/live: /dt-config/v1
+ *     /config-deploy-namespaces/pre: /dtops-config/v1
+ * 
+ *  When using the default configuration, by not supplying a namespace configuration, the config 
+ *  root will be placed at <default>/<namespace>.   For example in the config above, with a namespace 
+ *  of donkey, the config root will be: 
+ *     /dev-config/donkey
+ * @param namespace 
+ * @returns 
+ */
+export async function resolveSsmRootDirectory(namespace: string): Promise<string> {
+
+    const configService = new ConfigService();
+
+    const configs = await configService.getSsmTargetPathConfiguration();
+
+    const configNamespaceTarget = configs.find((x) => x.namespace === namespace);
+    const configDefaultTarget = configs.find((x) => x.namespace === DEFAULT_TARGET_NAMESPACE)
+
+    const message = `FAILURE: Neither namespace or ${DEFAULT_TARGET_NAMESPACE} were defined at:  ${CONFIG_DESTINATION_CONFIG_ROOT} `
+    if (!(configNamespaceTarget || configDefaultTarget)) {
+        log.error(message);
+        throw Error(message);
     }
+
+    console.debug(`Found Config: default: ${configDefaultTarget?.targetConfigRoot} - namespace - ${JSON.stringify(configNamespaceTarget)}`)
+    
+    return configNamespaceTarget?.targetConfigRoot || `${configDefaultTarget?.targetConfigRoot}`;
 }
 
-export interface InputConfig {
+/**
+ * namespace to target ssm path configuration
+ */
+export type InputConfig = {
     configPathDir: string;
     namespace: string;
 }
+
 export async function execute(props: InputConfig): Promise<void> {
 
-    const ssmRootPath = resolveSsmRootDirectory(props.namespace);
+    const targetSsmRootPath = await resolveSsmRootDirectory(props.namespace);
+    console.debug(`Using Target for SSM Deployments: ${targetSsmRootPath}`)
 
-    log.info(`SsmRootPath: ${ssmRootPath}`);
+    if(!targetSsmRootPath) return;
+    log.info(`SsmRootPath: ${targetSsmRootPath}`);
 
     // TODO: refactor config loader and this ssmGateway call
     // Config loader was used to separate this out into ConfigGroups for cloudformation.
@@ -34,7 +65,7 @@ export async function execute(props: InputConfig): Promise<void> {
 
     const config = new gitConfig.ConfigLoader({
         rootDir: props.configPathDir,
-        ssmRootPath,
+        ssmRootPath: targetSsmRootPath,
         currentAccount,
     })
 
@@ -47,7 +78,7 @@ export async function execute(props: InputConfig): Promise<void> {
     })
     log.info(`Incoming Config Set Count: ${allConfigs.length}`)
     log.info("Starting update of parameters");
-    await updateAllConfigs(allConfigs, ssmRootPath);
+    await updateAllConfigs(allConfigs, targetSsmRootPath);
 }
 
 export async function updateAllConfigs(allConfigs: gitConfig.Config[], ssmRootPath: string) {
@@ -105,12 +136,12 @@ log.options.debug = true;
 
         //start handling args
         await cmdTs.run(cmd, process.argv.slice(2))
-       
+
         log.info("Complete.  Exiting");
 
     } catch (e) {
         // Deal with the fact the chain failed
         log.info("error", { error: e });
-        exit(1);
+        process.exit(1);
     }
 })();

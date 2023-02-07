@@ -15,12 +15,10 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "npm run build; jest",
-    "test-watch": "tsc -w && jest",
-    "cdk": "cdk"
+    "test-watch": "tsc -w && jest"
   },
   "keywords": [
     "aws",
-    "cdk",
     "ssm",
     "git"
   ],
@@ -35,29 +33,27 @@
     "/lib/lambdas/ssmPublisher/*.ts"
   ],
   "devDependencies": {
-    "@types/node": "^18.7.18",
-    "aws-cdk": "^2.36.0",
-    "aws-sdk": "^2.1221.0",
-    "aws-sdk-client-mock": "^2.0.0",
-    "standard-version": "^9.5.0",
-    "ts-jest": "^28.0.8",
-    "typescript": "^4.8.3"
-  },
-  "dependencies": {
-    "@aws-sdk/client-ssm": "^3.171.0",
-    "@aws-sdk/middleware-retry": "^3.171.0",
-    "@types/aws-lambda": "^8.10.104",
+    "@aws-sdk/middleware-retry": "^3.266.1",
+    "@types/aws-lambda": "^8.10.110",
     "@types/flat": "5.0.2",
-    "cmd-ts": "^0.11.0",
-    "@types/glob": "^7.2.0",
+    "@types/glob": "^8.0.1",
     "@types/jest": "^28.1.8",
     "@types/js-yaml": "^4.0.5",
     "@types/lambda-log": "^2.2.1",
-    "flat": "^5.0.2",
-    "glob": "^8.0.3",
+    "@types/node": "^18.13.0",
+    "aws-sdk-client-mock": "^2.0.1",
     "jest": "^28.1.3",
+    "source-map-support": "^0.5.21",
+    "standard-version": "^9.5.0",
+    "ts-jest": "^28.0.8",
+    "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "@aws-sdk/client-ssm": "^3.266.1",
+    "cmd-ts": "^0.12.0",
+    "flat": "^5.0.2",
+    "glob": "^8.1.0",
     "js-yaml": "^4.1.0",
-    "lambda-log": "^3.1.0",
-    "source-map-support": "^0.5.21"
+    "lambda-log": "^3.1.0"
   }
 }
