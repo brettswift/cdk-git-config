@@ -7,21 +7,13 @@ import { StsGateway } from '../lib/gateways/sts-gateway';
 import { SsmService } from '../lib/services/ssm-service';
 import { exit } from 'process';
 
-export function resolveSsmRootDirectory(namespace: string): string {
-    if (namespace === 'live') {
-        return '/dt-config';
-    } else {
-        return `/dev-config/${namespace}`
-    }
-}
-
 export interface InputConfig {
     configPathDir: string;
-    namespace: string;
+    targetSsmPath: string;
 }
 export async function execute(props: InputConfig): Promise<void> {
 
-    const ssmRootPath = resolveSsmRootDirectory(props.namespace);
+    const ssmRootPath = props.targetSsmPath 
 
     log.info(`SsmRootPath: ${ssmRootPath}`);
 
@@ -52,13 +44,11 @@ export async function execute(props: InputConfig): Promise<void> {
 
 export async function updateAllConfigs(allConfigs: gitConfig.Config[], ssmRootPath: string) {
     const ssmService = new SsmService();
-
     const result = await ssmService.updateParametersByConfigRoot(allConfigs, ssmRootPath)
 
     log.info("Update Result", {
         result: result
     })
-
 }
 
 // needs a tsconfig change that might not work for cdk, for now use top level promise.
@@ -84,19 +74,19 @@ log.options.debug = true;
 
         const namespaceOption = cmdTs.option({
             type: cmdTs.string,
-            long: 'namespace',
-            short: 'n',
+            long: 'targetSsmPath',
+            short: 't',
         });
 
         const cmd = cmdTs.command({
             name: 'Config Deployer',
             args: {
-                namespace: namespaceOption,
+                targetSsmPath: namespaceOption,
                 configDir: configDirOption,
             },
             handler: async (args) => {
                 const config: InputConfig = {
-                    namespace: args.namespace,
+                    targetSsmPath: args.targetSsmPath,
                     configPathDir: args.configDir,
                 }
                 await execute(config);
@@ -105,7 +95,6 @@ log.options.debug = true;
 
         //start handling args
         await cmdTs.run(cmd, process.argv.slice(2))
-       
         log.info("Complete.  Exiting");
 
     } catch (e) {
